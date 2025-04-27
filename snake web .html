@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Shadow | Official Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(to right, #000428, #004e92);
+      color: white;
+      overflow-x: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.7);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #00ffff;
+      text-transform: uppercase;
+      animation: fadeIn 3s infinite alternate;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.05); }
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: white;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #00ffff;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .hero img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 5px solid #00ffff;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {transform: scale(1);}
+      50% {transform: scale(1.05);}
+      100% {transform: scale(1);}
+    }
+    .trending, .albums, .downloads, .videos, .join-us {
+      padding: 40px 20px;
+      background: rgba(255,255,255,0.05);
+      margin: 20px;
+      border-radius: 20px;
+      transition: transform 0.3s;
+    }
+    .trending:hover, .albums:hover, .downloads:hover, .videos:hover, .join-us:hover {
+      transform: translateY(-10px);
+      background: rgba(255,255,255,0.1);
+    }
+    .trending h2, .albums h2, .downloads h2, .videos h2, .join-us h2 {
+      margin-bottom: 20px;
+      color: #00ffff;
+      text-align: center;
+    }
+    .song-list, .album-list, .download-list, .video-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+    .song, .album, .download-item, .video {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .download-item a {
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    .download-item a:hover {
+      color: #00ced1;
+    }
+    .videos img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .video-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .video-popup-content {
+      position: relative;
+      background: #000;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90%;
+      max-height: 80%;
+    }
+    .video-popup-content video {
+      width: 100%;
+      height: auto;
+    }
+    .video-popup .close {
+      position: absolute;
+      top: 10px; right: 20px;
+      font-size: 30px;
+      color: #fff;
+      cursor: pointer;
+    }
+    .login-signup form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .login-signup input, .login-signup button {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+    }
+    .login-signup button {
+      background: #00ffff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .login-signup button:hover {
+      background: #00ced1;
+    }
+    .comments {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      margin-top: 20px;
+    }
+    .comments textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 10px;
+    }
+    .comments button {
+      background: #00ffff;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .comments button:hover {
+      background: #00ced1;
+    }
+    .comments .minimize-btn {
+      display: block;
+      background-color: #ff6f00;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background-color 0.3s;
+    }
+    .comments .minimize-btn:hover {
+      background-color: #ff9a3f;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: hsla(56, 97%, 46%, 0.884);
+      margin-top: 40px;
+      font-size: 0.9rem;
+    }
+
+    /* Minimize Comment Section */
+    .comments .minimized {
+      display: none;
+    }
+    .join-us-section {
+      background: linear-gradient(to right, #ff6f00, #ff9a3f);
+      padding: 40px;
+      border-radius: 20px;
+      margin-top: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .join-us-section h2 {
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .join-us-section button {
+      background: #00ffff;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 1rem;
+    }
+    .join-us-section button:hover {
+      background: #00ced1;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Snake Shadow Web</h1>
+  <nav>
+    <a href="#trending">Trending</a>
+    <a href="#albums">Albums</a>
+    <a href="#downloads">Downloads</a>
+    <a href="#videos">Videos</a>
+    <a href="#join-us">Join Us</a>
+  </nav>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <img src="snake.jpg" alt="Snake Shadow Profile">
+  <h2>Welcome to the Official Website of Snake Shadow</h2>
+  <p>Experience the magic of real music!</p>
+</section>
+
+<!-- Trending Songs -->
+<section id="trending" class="trending">
+  <h2>Trending Songs</h2>
+  <div class="song-list">
+    <div class="song">Burn Like Fire - Snake Shadow feat Pascal Pro</div>
+    <div class="song">Bullet and Ice</div>
+    <div class="song">Mwana Muiwala</div>
+    <div class="song">Ghost Whispers</div>
+  </div>
+</section>
+
+<!-- Albums Section -->
+<section id="albums" class="albums">
+  <h2>Albums</h2>
+  <div class="album-list">
+    <div class="album">Luiwombo</div>
+    <div class="album">Dark Jungle</div>
+    <div class="album">Silent Predator</div>
+  </div>
+</section>
+
+<!-- Downloads Section -->
+<section id="downloads" class="downloads">
+  <h2>Download Songs</h2>
+  <div class="download-list">
+    <div class="download-item"><a href="music/shadow_flow.mp3" download>Download Shadow Flow</a></div>
+    <div class="download-item"><a href="music/venomous_vibes.mp3" download>Download Venomous Vibes</a></div>
+    <div class="download-item"><a href="music/midnight_slither.mp3" download>Download Midnight Slither</a></div>
+    <div class="download-item"><a href="music/ghost_whispers.mp3" download>Download Ghost Whispers</a></div>
+  </div>
+</section>
+
+<!-- Videos Section -->
+<section id="videos" class="videos">
+  <h2>Watch Our Latest Videos</h2>
+  <div class="video-list">
+    <div class="video" onclick="openVideo('video/behind_the_music.mp4')">
+      <img src="images/video1.jpg" alt="Behind the Music">
+      <p>Behind the Music</p>
+    </div>
+    <div class="video" onclick="openVideo('video/snake_shadow_live.mp4')">
+      <img src="images/video2.jpg" alt="Snake Shadow Live">
+      <p>Snake Shadow Live</p>
+    </div>
+  </div>
+</section>
+
+<!-- New Artist Sign Up Section -->
+<section id="join-us" class="join-us-section">
+  <h2>New Artists - Join Us</h2>
+  <form>
+    <input type="text" placeholder="Username" required>
+    <input type="email" placeholder="Email" required>
+    <input type="password" placeholder="Password" required>
+    <button type="submit">Sign Up</button>
+  </form>
+</section>
+
+<!-- Comments Section (Minimized) -->
+<section id="comments" class="comments">
+  <button class="minimize-btn" onclick="toggleCommentForm()">Leave a Comment</button>
+  <div class="minimized">
+    <textarea placeholder="Write your comment..."></textarea>
+    <button>Submit Comment</button>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Snake Shadow | All Rights Reserved</p>
+</footer>
+
+<script>
+  function openVideo(videoPath) {
+    let popup = document.createElement('div');
+    popup.classList.add('video-popup');
+    popup.innerHTML = `
+      <div class="video-popup-content">
+        <video controls>
+          <source src="${videoPath}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <span class="close" onclick="closeVideo()">X</span>
+      </div>
+    `;
+    document.body.appendChild(popup);
+    popup.style.display = 'flex';
+  }
+
+  function closeVideo() {
+    document.querySelector('.video-popup').remove();
+  }
+
+  function toggleCommentForm() {
+    document.querySelector('.comments .minimized').classList.toggle('minimized');
+  }
+</script>
+
+</body>
+</html>
